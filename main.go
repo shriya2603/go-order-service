@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -9,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/orders-service/app"
+	"github.com/orders-service/db"
 )
 
 func getOrders(c *gin.Context) {
@@ -71,11 +71,19 @@ func setRouters() *gin.Engine {
 }
 
 func main() {
+	// Setup Logger
 	setLogger()
-	router := setRouters()
-	fmt.Println("configgg ", app.GetConfiguration())
+
+	config := app.GetConfiguration()
+
+	dbConn, dberr := db.SetupDBConnection(config)
+	if dberr != nil {
+		log.Fatalf("Failed to connect to Database %v", dberr)
+	}
+	log.Println("db conn ", dbConn)
 
 	// Start the server with port as 8080
+	router := setRouters()
 	router.Run()
 
 }
