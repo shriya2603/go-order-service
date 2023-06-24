@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -21,8 +22,6 @@ func getOrder(c *gin.Context) {
 	orderId := c.Param("id")
 	c.IndentedJSON(http.StatusOK, orderId)
 }
-
-func createOrder(c *gin.Context) {}
 
 func updateOrder(c *gin.Context) {}
 
@@ -56,14 +55,14 @@ setRouters() creates a default gin router with appropriate handlers for multiple
 We are currently using version v1 as its initial version of API and keeping all routers in block of code {} for readability and maintainibility
 */
 // initRouters
-func setRouters() *gin.Engine {
+func setRouters(api app.MarketPlaceAPIs) *gin.Engine {
 	router := gin.Default()
-	v1 := router.Group("/v1/order")
+	v1 := router.Group("/sv1/order")
 	{
 
 		v1.HEAD("/health", healthPing)
 		v1.GET("/", getOrders)
-		v1.POST("/create", createOrder)
+		v1.POST("/create", api.CreateOrder)
 		v1.GET("/:id", getOrder)
 		v1.PUT("/:id", updateOrder)
 		v1.DELETE("/:id", deleteOrder)
@@ -82,10 +81,13 @@ func main() {
 	if dberr != nil {
 		log.Fatalf("Failed to connect to Database %v", dberr)
 	}
+
 	log.Println("db conn ", dbConn)
+	fmt.Println("a ...any")
+	apiResource := app.NewMarketPlaceAPIs(dbConn)
 
 	// Start the server with port as 8080
-	router := setRouters()
+	router := setRouters(apiResource)
 	router.Run()
 
 }
