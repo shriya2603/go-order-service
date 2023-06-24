@@ -1,8 +1,6 @@
-package app
+package db
 
-import (
-	"time"
-)
+import "time"
 
 type Order struct {
 	ID         uint `gorm:"primarykey"`
