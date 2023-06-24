@@ -11,6 +11,8 @@ import (
 	"github.com/orders-service/db"
 )
 
+const logFilePath = "./log/gin.log"
+
 func getOrders(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, "Orders")
 }
@@ -39,7 +41,7 @@ We are currently writing the logs in console as well as in .log file
 */
 func setLogger() {
 
-	f, err := os.Create("./log/gin.log")
+	f, err := os.Create(logFilePath)
 	if err != nil {
 		log.Printf("Unable to create a log  file. Error : %v", err)
 	} else {
