@@ -17,3 +17,7 @@ http://localhost:8080/sv1/order/create
     ]
 }
 
+
+
+Get Order 
+http://localhost:8080/sv1/order/7

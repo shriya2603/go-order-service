@@ -1,7 +1,9 @@
 package app
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,13 +39,13 @@ func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
 
 	if !validID(newOrder.CustomerID, CUSTOMER_TABLENAME, m.DB) {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "Error": "Invalid Customer ID provided"})
+			gin.H{"status": http.StatusBadRequest, "error": "Invalid Customer ID provided"})
 		return
 	}
 
 	if len(newOrder.Products) == 0 {
 		c.JSON(http.StatusBadRequest,
-			gin.H{"status": http.StatusBadRequest, "Error": "Products cannot be empty. An order need to have atleast 1 product. Add a product and try again !"})
+			gin.H{"status": http.StatusBadRequest, "error": "Products cannot be empty. An order need to have atleast 1 product. Add a product and try again !"})
 		return
 	}
 
@@ -58,7 +60,7 @@ func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
 	if result.Error != nil {
 		apiErr(CREATE_ORDER_API, "unable to insert new order", result.Error)
 		c.JSON(http.StatusInternalServerError,
-			gin.H{"status": http.StatusInternalServerError, "Error": "Unable to insert order"})
+			gin.H{"status": http.StatusInternalServerError, "error": "Unable to insert order"})
 		return
 	}
 	//Iterate over the request data 'products array' and for each product
@@ -86,4 +88,34 @@ func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
 	c.JSON(http.StatusCreated,
 		gin.H{"status": http.StatusCreated, "message": "Order Created Successfully!", "OrderID": order.ID})
 
+}
+
+func (m *MarketPlaceAPIs) GetOrder(c *gin.Context) {
+	orderIdStr := c.Params.ByName("id")
+
+	orderId, err := strconv.Atoi(orderIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Order ID passed is not a valid number."})
+		return
+	}
+
+	if !validID(uint(orderId), ORDERS_TABLENAME, m.DB) {
+		c.JSON(http.StatusNotFound,
+			gin.H{"status": http.StatusNotFound, "error": "Invalid Order ID provided"})
+		return
+	}
+
+	var orderProducts []OrderProduct
+
+	query := fmt.Sprintf("SELECT * FROM %s where order_id=%d;", ORDER_PRODUCTS_TABLE_NAME, orderId)
+	m.DB.Raw(query).Scan(&orderProducts)
+	if len(orderProducts) == 0 {
+		c.JSON(http.StatusNotFound,
+			gin.H{"status": http.StatusNotFound, "error": "No order with requested ID exists in the table. Invalid ID."})
+		return
+	}
+
+	c.JSON(http.StatusOK,
+		gin.H{"status": http.StatusOK, "message": "Order Details Fetched Successfully!", "order": orderProducts})
 }
