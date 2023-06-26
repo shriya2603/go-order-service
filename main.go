@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -82,8 +81,6 @@ func main() {
 		log.Fatalf("Failed to connect to Database %v", dberr)
 	}
 
-	log.Println("db conn ", dbConn)
-	fmt.Println("a ...any")
 	apiResource := app.NewMarketPlaceAPIs(dbConn)
 
 	// Start the server with port as 8080
