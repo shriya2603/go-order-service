@@ -18,10 +18,10 @@ func SetupDBConnection(config *app.Configuration) (*gorm.DB, error) {
 	if err != nil {
 		return database, err
 	}
-	database.AutoMigrate(&Customer{})
-	database.AutoMigrate(&Product{})
-	database.AutoMigrate(&Order{})
-	database.AutoMigrate(&OrderProduct{})
+	database.AutoMigrate(&app.Customer{})
+	database.AutoMigrate(&app.Product{})
+	database.AutoMigrate(&app.Order{})
+	database.AutoMigrate(&app.OrderProduct{})
 	return database, nil
 
 }
