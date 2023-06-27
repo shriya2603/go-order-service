@@ -32,6 +32,9 @@ type NewOrderReq struct {
 	CustomerID uint      `json:"customer_id"`
 	Products   []Product `json:"products"`
 }
+type UpdateOrderStatusReq struct {
+	Status string `json:"status"`
+}
 
 func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
 	var newOrder NewOrderReq
@@ -118,4 +121,99 @@ func (m *MarketPlaceAPIs) GetOrder(c *gin.Context) {
 
 	c.JSON(http.StatusOK,
 		gin.H{"status": http.StatusOK, "message": "Order Details Fetched Successfully!", "order": orderProducts})
+}
+
+func (m *MarketPlaceAPIs) UpdateOrderedProducts(c *gin.Context) {
+	orderIdStr := c.Params.ByName("id")
+
+	orderId, err := strconv.Atoi(orderIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Order ID passed is not a valid number."})
+		return
+	}
+
+	if !validID(uint(orderId), ORDERS_TABLENAME, m.DB) {
+		c.JSON(http.StatusNotFound,
+			gin.H{"status": http.StatusNotFound, "error": "Invalid Order ID provided"})
+		return
+	}
+
+	var updateOrderProducts NewOrderReq
+	c.Bind(&updateOrderProducts)
+	var failedProductUpdate []uint
+
+	var orderProducts []OrderProduct
+
+	query := fmt.Sprintf("SELECT * FROM %s where order_id=%d ORDER BY ID;", ORDER_PRODUCTS_TABLE_NAME, orderId)
+	result := m.DB.Raw(query).Scan(&orderProducts)
+	if len(orderProducts) == 0 || result.Error != nil {
+		c.JSON(http.StatusNotFound,
+			gin.H{"status": http.StatusNotFound, "error": "No order with requested ID exists in the table. Invalid ID."})
+		return
+	} else if len(orderProducts) != len(updateOrderProducts.Products) {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "v1 Update API supports only product details updation in the existing order. New products addition and existing products deletion from existing order will be supported in future API ver"})
+		return
+	} else {
+		for i, orderProduct := range orderProducts {
+			product := updateOrderProducts.Products[i]
+			orderProduct.CustomerID = updateOrderProducts.CustomerID
+			orderProduct.ProductID = product.ID
+			orderProduct.UpdatedAt = time.Now()
+			qResult := m.DB.Model(OrderProduct{}).Where("id = ?", orderProduct.ID).Updates(orderProduct)
+			if qResult.Error != nil {
+				failedProductUpdate = append(failedProductUpdate, orderProduct.ProductID)
+			}
+		}
+	}
+
+	if len(failedProductUpdate) > 0 {
+		c.JSON(http.StatusBadGateway,
+			gin.H{"status": http.StatusBadGateway, "message": fmt.Sprintf("Unableto update products with ID %v ", failedProductUpdate)})
+		return
+	}
+	c.JSON(http.StatusOK,
+		gin.H{"status": http.StatusOK, "message": "Order Updated Successfully!"})
+
+}
+
+func (m *MarketPlaceAPIs) UpdateOrderStatus(c *gin.Context) {
+	orderIdStr := c.Params.ByName("id")
+
+	orderId, err := strconv.Atoi(orderIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			gin.H{"status": http.StatusBadRequest, "error": "Order ID passed is not a valid number."})
+		return
+	}
+
+	if !validID(uint(orderId), ORDERS_TABLENAME, m.DB) {
+		c.JSON(http.StatusNotFound,
+			gin.H{"status": http.StatusNotFound, "error": "Invalid Order ID provided"})
+		return
+	}
+
+	var order Order
+
+	query := fmt.Sprintf("SELECT * FROM %s where id=%d;", ORDERS_TABLENAME, orderId)
+	m.DB.Raw(query).First(&order)
+	if (Order{}) == order {
+		c.JSON(http.StatusNotFound,
+			gin.H{"status": http.StatusNotFound, "error": "No order with requested ID exists in the table. Invalid ID."})
+		return
+	}
+
+	var updateOrder UpdateOrderStatusReq
+	c.Bind(&updateOrder)
+
+	result := m.DB.Model(&Order{}).Where("id = ?", orderId).Update("status", updateOrder.Status)
+	if result.RowsAffected != 1 {
+		c.JSON(http.StatusInternalServerError,
+			gin.H{"status": http.StatusInternalServerError, "message": "Order not updated!"})
+		return
+	}
+	c.JSON(http.StatusOK,
+		gin.H{"status": http.StatusOK, "message": "Order Updated Successfully!"})
+
 }

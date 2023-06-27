@@ -63,7 +63,8 @@ func setRouters(api app.MarketPlaceAPIs) *gin.Engine {
 		v1.GET("/", getOrders)
 		v1.POST("/create", api.CreateOrder)
 		v1.GET("/:id", api.GetOrder)
-		v1.PUT("/:id", updateOrder)
+		v1.PUT("/updateOrderProducts/:id", api.UpdateOrderedProducts)
+		v1.PUT("/:id", api.UpdateOrderStatus)
 		v1.DELETE("/:id", deleteOrder)
 
 	}
