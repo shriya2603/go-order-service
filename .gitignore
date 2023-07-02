@@ -2,6 +2,7 @@
 config.json
 log/
 *.sum
+orders-service
 
 # Binaries for programs and plugins
 *.exe

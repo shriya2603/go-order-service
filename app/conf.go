@@ -12,11 +12,14 @@ var appConfig *Configuration
 
 // Configuration: consist of configs from config.json file
 type Configuration struct {
-	DBHost     string `json:"host"`
-	DBPort     int    `json:"port"`
-	DBUser     string `json:"user"`
-	DBPassword string `json:"password"`
-	DBName     string `json:"dbname"`
+	DBHost       string `json:"host"`
+	DBPort       int    `json:"port"`
+	DBUser       string `json:"user"`
+	DBPassword   string `json:"password"`
+	DBName       string `json:"dbname"`
+	ServiceName  string `json:"servicename"`
+	ServicePort  int    `json:"serviceport"`
+	ObserverPort int    `json:"observerport"`
 }
 
 func loadConfig() {
