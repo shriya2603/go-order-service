@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/orders-service/observablity"
 )
 
 const (
@@ -37,6 +38,8 @@ type UpdateOrderStatusReq struct {
 }
 
 func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
+	observablity.CreateOrderApiCounter.Inc()
+
 	var newOrder NewOrderReq
 	c.Bind(&newOrder)
 
@@ -90,11 +93,11 @@ func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
 
 	c.JSON(http.StatusCreated,
 		gin.H{"status": http.StatusCreated, "message": "Order Created Successfully!", "OrderID": order.ID})
-
 }
 
 func (m *MarketPlaceAPIs) GetOrder(c *gin.Context) {
 	orderIdStr := c.Params.ByName("id")
+	observablity.GetOrderApiCounter.Inc()
 
 	orderId, err := strconv.Atoi(orderIdStr)
 	if err != nil {
@@ -125,6 +128,7 @@ func (m *MarketPlaceAPIs) GetOrder(c *gin.Context) {
 
 func (m *MarketPlaceAPIs) UpdateOrderedProducts(c *gin.Context) {
 	orderIdStr := c.Params.ByName("id")
+	observablity.UpdateOrderedProductsApiCounter.Inc()
 
 	orderId, err := strconv.Atoi(orderIdStr)
 	if err != nil {
@@ -175,11 +179,11 @@ func (m *MarketPlaceAPIs) UpdateOrderedProducts(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK,
 		gin.H{"status": http.StatusOK, "message": "Order Updated Successfully!"})
-
 }
 
 func (m *MarketPlaceAPIs) UpdateOrderStatus(c *gin.Context) {
 	orderIdStr := c.Params.ByName("id")
+	observablity.UpdateOrderStatusApiCounter.Inc()
 
 	orderId, err := strconv.Atoi(orderIdStr)
 	if err != nil {
@@ -215,5 +219,4 @@ func (m *MarketPlaceAPIs) UpdateOrderStatus(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK,
 		gin.H{"status": http.StatusOK, "message": "Order Updated Successfully!"})
-
 }

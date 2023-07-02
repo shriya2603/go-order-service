@@ -59,7 +59,7 @@ We are currently using version v1 as its initial version of API and keeping all 
 // initRouters
 func setRouters(api app.MarketPlaceAPIs) *gin.Engine {
 	router := gin.Default()
-	v1 := router.Group("/sv1/order")
+	v1 := router.Group("/v1/order")
 	{
 
 		v1.HEAD("/health", healthPing)

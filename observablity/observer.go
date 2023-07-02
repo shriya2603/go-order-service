@@ -14,14 +14,36 @@ var (
 		Name: "uptime",
 		Help: "Uptime of service"},
 		[]string{"service_name"})
+	CreateOrderApiCounter = prometheus.NewCounter(prometheus.CounterOpts{
+		Name: "create_order_api_count",
+		Help: "Counter for create order api",
+	})
+
+	GetOrderApiCounter = prometheus.NewCounter(prometheus.CounterOpts{
+		Name: "get_order_api_count",
+		Help: "Counter for get order api",
+	})
+
+	UpdateOrderedProductsApiCounter = prometheus.NewCounter(prometheus.CounterOpts{
+		Name: "update_ordered_products_api_count",
+		Help: "Counter for update ordered products api",
+	})
+	UpdateOrderStatusApiCounter = prometheus.NewCounter(prometheus.CounterOpts{
+		Name: "update_order_status_api_count",
+		Help: "Counter for create order api",
+	})
 )
 
 func init() {
 	prometheus.MustRegister(upTime)
+	prometheus.MustRegister(CreateOrderApiCounter)
+	prometheus.MustRegister(GetOrderApiCounter)
+	prometheus.MustRegister(UpdateOrderedProductsApiCounter)
+	prometheus.MustRegister(UpdateOrderStatusApiCounter)
+
 }
 func prometheusHandler() gin.HandlerFunc {
 	h := promhttp.Handler()
-
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
