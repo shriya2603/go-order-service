@@ -1,14 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/orders-service/app"
 	"github.com/orders-service/db"
+	"github.com/orders-service/observablity"
 )
 
 const logFilePath = "./log/gin.log"
@@ -56,7 +59,7 @@ We are currently using version v1 as its initial version of API and keeping all 
 // initRouters
 func setRouters(api app.MarketPlaceAPIs) *gin.Engine {
 	router := gin.Default()
-	v1 := router.Group("/sv1/order")
+	v1 := router.Group("/v1/order")
 	{
 
 		v1.HEAD("/health", healthPing)
@@ -74,18 +77,22 @@ func setRouters(api app.MarketPlaceAPIs) *gin.Engine {
 func main() {
 	// Setup Logger
 	setLogger()
-
+	var wg sync.WaitGroup
 	config := app.GetConfiguration()
+	serverURL := fmt.Sprintf("localhost:%d", config.ServicePort)
+	observerURL := fmt.Sprintf("localhost:%d", config.ObserverPort)
+	wg.Add(1)
+	go observablity.StartObserver(&wg, observerURL, config.ServiceName, 0)
 
 	dbConn, dberr := db.SetupDBConnection(config)
 	if dberr != nil {
 		log.Fatalf("Failed to connect to Database %v", dberr)
 	}
-
 	apiResource := app.NewMarketPlaceAPIs(dbConn)
 
 	// Start the server with port as 8080
 	router := setRouters(apiResource)
-	router.Run()
+	router.Run(serverURL)
+	wg.Wait()
 
 }
