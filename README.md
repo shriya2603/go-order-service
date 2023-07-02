@@ -43,3 +43,7 @@ http://localhost:8080/sv1/order/updateOrderProducts/7
         }
     ]
 }
+
+# Observality 
+
+Ref : https://gabrieltanner.org/blog/collecting-prometheus-metrics-in-golang/
