@@ -6,6 +6,19 @@ Order service is services which has a APIs to create , update, update order stat
 - Create Order: Lets the user to create a order with help of product and customer details 
 - Update Order Status: Lets the user to update the status of the order 
 - Update Order product : Lets the user to update the product id 
+- Observality : Added api hit metric, elapsed time of APIs metric 
+
+## Observality 
+- Grafana Screenshot
+![Grafana Screen shot ](screenshots/grafana_screenshot.png)
+
+- APIs Hit metrics Screenshots
+![APIs Hit metrics](screenshots/Apis_hit_metrics.png)
+
+
+### Reference : 
+- https://gabrieltanner.org/blog/collecting-prometheus-metrics-in-golang/
+- https://promlabs.com/promql-cheat-sheet/
 
 ## Sample API s 
 http://localhost:8080/v1/order/create
@@ -50,19 +63,14 @@ http://localhost:8080/v1/order/updateOrderProducts/7
     ]
 }
 
-# Observality 
 
-
-Ref : 
-- https://gabrieltanner.org/blog/collecting-prometheus-metrics-in-golang/
-- https://promlabs.com/promql-cheat-sheet/
 
 
 ## TODO 
-- Add delete api 
-- Add any update to created order status in kafka topic 
-- Use Grafana dashboard to visualize all the prometheus metrics 
+[ ] Add delete api <br>
+[ ] Add any update to created order status in kafka topic <br>
+[x] Use Grafana dashboard to visualize all the prometheus metrics 
     - For uptime metric : uptime > 0
     - For Api counter metric : rate(<api_name>[$__rate_interval])
-    - For elapse time metric : order_service_apis_elapsed_time with label as apiname 
-- Add a docker compose file 
+    - For elapse time metric : order_service_apis_elapsed_time with label as apiname <br>
+[ ] Add a docker compose file 
