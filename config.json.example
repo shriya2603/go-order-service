@@ -4,4 +4,7 @@
     "user": "postgres",
     "password": "",
     "dbname": "marketplace"
+    "servicename":"order_service",
+    "serviceport":8080,
+    "observerport":9080
 }

@@ -67,10 +67,10 @@ http://localhost:8080/v1/order/updateOrderProducts/7
 
 
 ## TODO 
-[ ] Add delete api <br>
-[ ] Add any update to created order status in kafka topic <br>
-[x] Use Grafana dashboard to visualize all the prometheus metrics 
+- [ ] Add delete api 
+- [ ] Add any update to created order status in kafka topic 
+- [x] Use Grafana dashboard to visualize all the prometheus metrics 
     - For uptime metric : uptime > 0
     - For Api counter metric : rate(<api_name>[$__rate_interval])
-    - For elapse time metric : order_service_apis_elapsed_time with label as apiname <br>
-[ ] Add a docker compose file 
+    - For elapse time metric : order_service_apis_elapsed_time with label as apiname 
+- [ ] Add a docker compose file 
