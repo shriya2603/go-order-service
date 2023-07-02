@@ -65,3 +65,4 @@ Ref :
     - For uptime metric : uptime > 0
     - For Api counter metric : rate(<api_name>[$__rate_interval])
     - For elapse time metric : order_service_apis_elapsed_time with label as apiname 
+- Add a docker compose file 
