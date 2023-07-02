@@ -19,7 +19,10 @@ const (
 )
 
 const (
-	CREATE_ORDER_API = "CREATE_ORDER_API"
+	CREATE_ORDER_API            = "CREATE_ORDER_API"
+	GET_ORDER_API               = "GET_ORDER_API"
+	UPDATE_ORDERED_PRODUCTS_API = "UPDATE_ORDERED_PRODUCTS_API"
+	UPDATE_ORDER_STATUS         = "UPDATE_ORDER_STATUS"
 )
 
 const (
@@ -38,7 +41,9 @@ type UpdateOrderStatusReq struct {
 }
 
 func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
+	apiStartTime := time.Now()
 	observablity.CreateOrderApiCounter.Inc()
+	defer observablity.OrderServiceApiElapsedTime.WithLabelValues(CREATE_ORDER_API).Set(float64(time.Since(apiStartTime).Milliseconds()))
 
 	var newOrder NewOrderReq
 	c.Bind(&newOrder)
@@ -97,8 +102,9 @@ func (m *MarketPlaceAPIs) CreateOrder(c *gin.Context) {
 
 func (m *MarketPlaceAPIs) GetOrder(c *gin.Context) {
 	orderIdStr := c.Params.ByName("id")
+	apiStartTime := time.Now()
 	observablity.GetOrderApiCounter.Inc()
-
+	defer observablity.OrderServiceApiElapsedTime.WithLabelValues(GET_ORDER_API).Set(float64(time.Since(apiStartTime).Milliseconds()))
 	orderId, err := strconv.Atoi(orderIdStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
@@ -128,8 +134,9 @@ func (m *MarketPlaceAPIs) GetOrder(c *gin.Context) {
 
 func (m *MarketPlaceAPIs) UpdateOrderedProducts(c *gin.Context) {
 	orderIdStr := c.Params.ByName("id")
+	apiStartTime := time.Now()
 	observablity.UpdateOrderedProductsApiCounter.Inc()
-
+	defer observablity.OrderServiceApiElapsedTime.WithLabelValues(UPDATE_ORDERED_PRODUCTS_API).Set(float64(time.Since(apiStartTime).Milliseconds()))
 	orderId, err := strconv.Atoi(orderIdStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
@@ -183,8 +190,9 @@ func (m *MarketPlaceAPIs) UpdateOrderedProducts(c *gin.Context) {
 
 func (m *MarketPlaceAPIs) UpdateOrderStatus(c *gin.Context) {
 	orderIdStr := c.Params.ByName("id")
+	apiStartTime := time.Now()
 	observablity.UpdateOrderStatusApiCounter.Inc()
-
+	defer observablity.OrderServiceApiElapsedTime.WithLabelValues(UPDATE_ORDER_STATUS).Set(float64(time.Since(apiStartTime).Milliseconds()))
 	orderId, err := strconv.Atoi(orderIdStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,

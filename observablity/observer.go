@@ -32,6 +32,10 @@ var (
 		Name: "update_order_status_api_count",
 		Help: "Counter for create order api",
 	})
+	OrderServiceApiElapsedTime = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "order_service_apis_elapsed_time",
+		Help: "Time taken to execute an API",
+	}, []string{"api_name"})
 )
 
 func init() {
@@ -40,6 +44,7 @@ func init() {
 	prometheus.MustRegister(GetOrderApiCounter)
 	prometheus.MustRegister(UpdateOrderedProductsApiCounter)
 	prometheus.MustRegister(UpdateOrderStatusApiCounter)
+	prometheus.MustRegister(OrderServiceApiElapsedTime)
 
 }
 func prometheusHandler() gin.HandlerFunc {
@@ -56,8 +61,8 @@ func StartObserver(wg *sync.WaitGroup, observerAddr string, serverName string, b
 		defer wg.Done()
 		for {
 			select {
-			case <-time.After(30 * time.Second):
-				bootTime += 30.0
+			case <-time.After(10 * time.Second):
+				bootTime += 10.0
 				upTime.WithLabelValues(serverName).Set(bootTime)
 			}
 
