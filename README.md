@@ -103,7 +103,6 @@ http://localhost:8080/v1/order/updateOrderProducts/7<br>
     "status": 200
 }`
 
-
 ## TODO 
 - [ ] Update Order products API : User should be allowed to update product details once order status is in SHIPPED status  
 - [ ] Add delete api 
@@ -113,3 +112,21 @@ http://localhost:8080/v1/order/updateOrderProducts/7<br>
     - For Api counter metric : rate(<api_name>[$__rate_interval])
     - For elapse time metric : order_service_apis_elapsed_time with label as apiname 
 - [ ] Add a docker compose file 
+
+
+## Database commands 
+# Database commands 
+To start postgresql 
+<br>`psql -h localhost -p <port-number> -U shriyavimalsundriyal`
+
+To list databases 
+<br>`\l`
+
+To connect to new database
+<br>`\c <database name>`
+
+To list of tables in database 
+<br>`\d` 
+
+To list the property / attribute of table 
+<br>`\d <table-name>`
