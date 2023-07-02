@@ -22,7 +22,7 @@ Order service is services which has a APIs to create , update, update order stat
 
 ##  API s 
 ### Create Order 
-http://localhost:8080/v1/order/create
+http://localhost:8080/v1/order/create<br>
 `{
     "customer_id": 1,
     "products": [
@@ -35,7 +35,7 @@ http://localhost:8080/v1/order/create
     ]
 }`
 
-<br>Response
+<br>Response<br>
 {
     "OrderID": 3,
     "message": "Order Created Successfully!",
@@ -43,9 +43,9 @@ http://localhost:8080/v1/order/create
 } 
 
 ### Get Order by ID 
-http://localhost:8080/v1/order/7
+http://localhost:8080/v1/order/7<br>
 
-<br>Response 
+<br>Response<br>
 `{
     "message": "Order Details Fetched Successfully!",
     "order": [
@@ -72,19 +72,19 @@ http://localhost:8080/v1/order/7
 
 
 ### Update Status of an order
-http://localhost:8080/v1/order/1
+http://localhost:8080/v1/order/1<br>
 `{
     "status":"DELIEVERED"
 }`
 
-<br>Response 
+<br>Response<br>
 `{
     "message": "Order Updated Successfully!",
     "status": 200
 }`
 
 ### Update Order Products API 
-http://localhost:8080/v1/order/updateOrderProducts/7
+http://localhost:8080/v1/order/updateOrderProducts/7<br>
 `{
     "customer_id": 1,
     "products": [
@@ -97,11 +97,11 @@ http://localhost:8080/v1/order/updateOrderProducts/7
     ]
 }`
 
-<br> Responses 
-{
+<br>Response<br>
+`{
     "message": "Order Updated Successfully!",
     "status": 200
-}
+}`
 
 
 ## TODO 
