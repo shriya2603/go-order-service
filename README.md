@@ -4,8 +4,8 @@ Order service is services which has a APIs to create , update, update order stat
 
 ## Features 
 - Create Order: Lets the user to create a order with help of product and customer details 
-- Update Order Status: Lets the 
-
+- Update Order Status: Lets the user to update the status of the order 
+- Update Order product : Lets the user to update the product id 
 
 ## Sample API s 
 http://localhost:8080/v1/order/create
@@ -59,6 +59,7 @@ Ref :
 
 
 ## TODO 
+- Add delete api 
 - Add any update to created order status in kafka topic 
 - Use Grafana dashboard to visualize all the prometheus metrics 
     - For uptime metric : uptime > 0
